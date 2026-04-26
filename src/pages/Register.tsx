@@ -1,11 +1,13 @@
-import { Flex, Heading, VStack, Text, Input, Button, Box } from '@chakra-ui/react';
-import { User, Mail, Lock } from 'lucide-react';
-import type { RegisterForm } from '../interfaces/registerForm';
-import { useState } from 'react';
+import { Flex, Heading, VStack, Text, Input, Button, Box } from '@chakra-ui/react'
+import { User, Mail, Lock } from 'lucide-react'
+import type { RegisterForm } from '../interfaces/registerForm'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 
 export default function Register(){
 
+    const navigate = useNavigate()
     const [formData, setFormData] = useState<RegisterForm>({
         nome: "",
         email: "",
@@ -30,6 +32,21 @@ export default function Register(){
 
         try{
 
+            if (!formData.nome || !formData.email || !formData.senha || !formData.confirmarSenha){
+                alert("Preencha todos os campos")
+                return
+            }
+
+            if (!formData.email.includes('@')){
+                alert("Email Inválido")
+                return
+            }
+
+            if (formData.senha.length < 8){
+                alert("A senha deve ter no mínimo 8 caracteres")
+                return
+            }
+
             const payload = {
                 nome: formData.nome,
                 email: formData.email,
@@ -46,15 +63,15 @@ export default function Register(){
 
             if(response.ok){
                 const data = await response.json()
-                console.log("Sucesso! O Java devolveu:", data);
+                console.log("Sucesso! O Java devolveu:", data)
                 alert("Conta Criada com Sucesso!")
             }else{
-                alert("Falha ao criar conta. Talvez este e-mail já esteja em uso.");
+                alert("Falha ao criar conta. Talvez este e-mail já esteja em uso.")
             }
 
         }catch(e){
             console.error("Erro na conexão:", e);
-            alert("Não foi possível conectar ao servidor. Verifique se o Java está rodando.");
+            alert("Não foi possível conectar ao servidor. Verifique se o Java está rodando.")
         }
     }
 
@@ -132,6 +149,7 @@ export default function Register(){
                             borderRadius="xl"
                             _placeholder={{ color: "whiteAlpha.300" }}
                             _focus={{ borderColor: "orange.500", bg: "whiteAlpha.200", ring: 0 }}
+
                         />
                     </Box>
 
@@ -154,6 +172,7 @@ export default function Register(){
                             borderRadius="xl"
                             _placeholder={{ color: "whiteAlpha.300" }}
                             _focus={{ borderColor: "orange.500", bg: "whiteAlpha.200", ring: 0 }}
+                            
                         />
                     </Box>
 
@@ -235,6 +254,7 @@ export default function Register(){
 
                 <VStack gap={4} w="full">
                     <Button 
+                        onClick={() => navigate("/")}
                         w="full" 
                         bg="transparent" 
                         border="1px solid" 
